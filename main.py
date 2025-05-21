@@ -44,7 +44,6 @@ def TakeNext(c):
     else:
         return False
 
-
 # recogniser functions
 def IsDigit(c):
     return c >= "0" and c <= "9"
@@ -74,6 +73,42 @@ def TakeNextAlNum():
     return alnum
 
 
+# -----------------------------------------------------------------------
+# start operation of program itself
+
+def DoBreak(act):
+    if act[0]: 
+        act[0] = False
+
+def DoPrint(act):
+    if act[0]:
+        print("print")
+
+def Statement(act):
+    if TakeString("print"):
+        DoPrint(act)
+    elif TakeString("break"):
+        DoBreak(act)
+    else:
+        Error("unkown statement")
+
+def Block(act):
+    if TakeNext('{'):
+        while not TakeNext('}'):
+            Block(act)
+    else:
+        Statement(act)
+
+def Program():
+    act = [True]
+    while Next() != '\0':
+        Block(act)
+
+def Error(text):
+    print("\nERROR " + text)
+    exit(1)
+
+# -----------------------------------------------------------------------
 # use program counter like a cpu
 pc = 0
 
