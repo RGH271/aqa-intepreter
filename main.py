@@ -44,6 +44,7 @@ def TakeNext(c):
     else:
         return False
 
+
 # recogniser functions
 def IsDigit(c):
     return c >= "0" and c <= "9"
@@ -76,72 +77,76 @@ def TakeNextAlNum():
 # -----------------------------------------------------------------------
 # start operation of program itself
 
+
 # and create a boolean factor
 def BooleanFactor(act):
-    inv = TakeNext('!')
+    inv = TakeNext("!")
     e = Expression(act)
     b = e[1]
     Next()
-    if (e[0] == 'i'):
+    if e[0] == "i":
         if TakeString("=="):
-            b = (b == MathExpression(act))
-        elif TakeString("!="): 
-            b = (b != MathExpression(act))
-        elif TakeString("<="): 
-            b = (b <= MathExpression(act))
-        elif TakeString("<"): 
-            b = (b < MathExpression(act))
-        elif TakeString(">="): 
-            b = (b >= MathExpression(act))
-        elif TakeString(">"): 
-            b = (b > MathExpression(act))
-    else:
-        if TakeString('=='):
-            b = (b == StringExpression(act))
+            b = b == MathExpression(act)
         elif TakeString("!="):
-            b = (b != StringExpression(act))
+            b = b != MathExpression(act)
+        elif TakeString("<="):
+            b = b <= MathExpression(act)
+        elif TakeString("<"):
+            b = b < MathExpression(act)
+        elif TakeString(">="):
+            b = b >= MathExpression(act)
+        elif TakeString(">"):
+            b = b > MathExpression(act)
+    else:
+        if TakeString("=="):
+            b = b == StringExpression(act)
+        elif TakeString("!="):
+            b = b != StringExpression(act)
         else:
-            b = (b != "")
+            b = b != ""
     # always return false if inactive
     return act[0] and (b != inv)
+
 
 # allow for boolean terms
 def BooleanTerm(act):
     b = BooleanFactor(act)
-    while TakeNext('&'):
+    while TakeNext("&"):
         b = b & BooleanFactor(act)
     return b
+
 
 # boolean expressions
 def BooleanExpression(act):
     b = BooleanExpression(act)
-    while TakeNext('|'):
+    while TakeNext("|"):
         b = b | BooleanTerm(act)
     return b
+
 
 # define a math factor
 def MathFactor(act):
     m = 0
     # allow for round brackets surrounding a maths expression
-    if TakeNext('('):
+    if TakeNext("("):
         m = MathExpression(act)
-        if not TakeNext(')'):
+        if not TakeNext(")"):
             Error("missing ')'")
     # check for just a raw number
     elif IsDigit(Next()):
         while IsDigit(Look()):
-            m = 10 * m + ord(Take()) - ord('0')
+            m = 10 * m + ord(Take()) - ord("0")
     # allow for the value of a string
     elif TakeString("val("):
         s = String(act)
         if act[0] and s.isdigit():
             m = int(s)
-        if not TakeNext(')'):
+        if not TakeNext(")"):
             Error("missing ')'")
     # aand value of a variable
     else:
         ident = TakeNextAlNum()
-        if ident not in variable or variable[ident][0] != 'i':
+        if ident not in variable or variable[ident][0] != "i":
             Error("unkown variable")
         elif act[0]:
             m = variable[ident][1]
@@ -160,41 +165,43 @@ def MathTerm(act):
             m = m / m2
     return m
 
+
 # implement math expressions
 def MathExpression(act):
     c = Next()
     if IsAddOp(c):
         c = Take()
     m = MathTerm(act)
-    if c == '-':
+    if c == "-":
         m = -m
     while IsAddOp(Next()):
         c = Take()
         m2 = MathTerm(act)
-        if c == '+':
+        if c == "+":
             # addition
             m = m + m2
-        else: 
+        else:
             # subtraction
             m = m - m2
     return m
+
 
 # actually implement strings
 def String(act):
     s = ""
     # literal strings
-    if TakeNext('\"'):
-        while not TakeString("\""):
-            if Look() == '\0':
+    if TakeNext('"'):
+        while not TakeString('"'):
+            if Look() == "\0":
                 Error("unexpected EOF")
             if TakeString("\\n"):
-                s += '\n'
+                s += "\n"
             else:
                 s += Take()
     # evaluations of maths expressions
     elif TakeString("str("):
         s = str(MathExpression(act))
-        if not TakeNext(')'):
+        if not TakeNext(")"):
             Error("missing ')'")
     # content of a user input
     elif TakeString("input()"):
@@ -203,17 +210,17 @@ def String(act):
     # content of a variable
     else:
         ident = TakeNextAlNum()
-        if ident in variable and variable[ident][0] == 's':
+        if ident in variable and variable[ident][0] == "s":
             s = variable[ident][1]
         else:
             Error("not a string")
     return s
-    
+
 
 # define string expressions
 def StringExpression(act):
     s = String(act)
-    while TakeNext('+'):
+    while TakeNext("+"):
         s += String(act)
     return s
 
@@ -223,10 +230,16 @@ def Expression(act):
     copypc = pc
     ident = TakeNextAlNum()
     pc = copypc
-    if Next() == '\"' or ident == "str" or ident == "input" or (ident in variable and variable[ident][0] == 's'):
-        return ('s', StringExpression(act))
+    if (
+        Next() == '"'
+        or ident == "str"
+        or ident == "input"
+        or (ident in variable and variable[ident][0] == "s")
+    ):
+        return ("s", StringExpression(act))
     else:
-        return('i', MathExpression(act))
+        return ("i", MathExpression(act))
+
 
 # while logic
 def DoWhile(act):
@@ -260,7 +273,7 @@ def DoIfElse(act):
 def DoGoSub(act):
     global pc
     ident = TakeNextAlNum()
-    if ident not in variable or variable[ident][0] != 'p':
+    if ident not in variable or variable[ident][0] != "p":
         Error("unknown subroutine")
     # execute block as subroutine
     ret = pc
@@ -275,21 +288,24 @@ def DoSubDef():
     ident = TakeNextAlNum()
     if ident == "":
         Error("missing subroutine identifier")
-    variable[ident] = ('p', pc)
+    variable[ident] = ("p", pc)
     Block([False])
+
 
 # variable assignments
 def DoAssign(act):
     ident = TakeNextAlNum()
-    if not TakeNext('=') or ident == "":
+    if not TakeNext("=") or ident == "":
         Error("unknown statement")
     e = Expression(act)
     if act[0] or ident not in variable:
         variable[ident] = e
 
+
 def DoBreak(act):
-    if act[0]: 
+    if act[0]:
         act[0] = False
+
 
 # print statements
 def DoPrint(act):
@@ -297,8 +313,9 @@ def DoPrint(act):
         e = Expression(act)
         if act[0]:
             print(e[1], end="")
-        if not TakeNext(','):
+        if not TakeNext(","):
             return
+
 
 def Statement(act):
     if TakeString("print"):
@@ -316,23 +333,36 @@ def Statement(act):
     else:
         DoAssign(act)
 
+
 def Block(act):
-    if TakeNext('{'):
-        while not TakeNext('}'):
+    if TakeNext("{"):
+        while not TakeNext("}"):
             Block(act)
     else:
         Statement(act)
 
+
 def Program():
     act = [True]
-    while Next() != '\0':
+    while Next() != "\0":
         Block(act)
+
 
 def Error(text):
     s = source[:pc].rfind("\n") + 1
     e = source.find("\n", pc)
-    print("\nERROR " + text + " in line " + str(source[:pc].count("\n") + 1) + ": '" + source[s:pc] + "_" + source[s:])
+    print(
+        "\nERROR "
+        + text
+        + " in line "
+        + str(source[:pc].count("\n") + 1)
+        + ": '"
+        + source[s:pc]
+        + "_"
+        + source[:e]
+    )
     exit(1)
+
 
 # -----------------------------------------------------------------------
 # use program counter like a cpu
@@ -351,3 +381,5 @@ except:
     exit(1)
 source = f.read() + "\0"
 f.close()
+
+Program()
