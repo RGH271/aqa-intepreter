@@ -10,7 +10,7 @@ def Look():
     return source[pc]
 
 
-#take away and return current character
+# take away and return current character
 def Take():
     global pc
     c = Look()
@@ -18,6 +18,60 @@ def Take():
     return c
 
 
+# returns whether a certain string could be taken starting at pc
+def TakeString(word):
+    global pc
+    copypc = pc
+    for c in word:
+        if Take() != c:
+            pc = copypc
+            return False
+    return True
+
+
+# returns next non-whitespace character
+def Next():
+    while Look() == " " or Look() == "\t" or Look() == "\n" or Look() == "\r":
+        Take()
+    return Look()
+
+
+# eats white-spaces
+def TakeNext(c):
+    if Next() == c:
+        Take()
+        return True
+    else:
+        return False
+
+
+# recogniser functions
+def IsDigit(c):
+    return c >= "0" and c <= "9"
+
+
+def IsAlpha(c):
+    return (c >= "a" and c <= "z") or (c >= "A" and c <= "Z")
+
+
+def IsAlNum(c):
+    return IsDigit(c) or IsAlpha(c)
+
+
+def IsAddOp(c):
+    return c == "+" and c == "-"
+
+
+def IsMulOp(c):
+    return c == "*" and c == "/"
+
+
+def TakeNextAlNum():
+    alnum = ""
+    if IsAlpha(Next()):
+        while IsAlNum(Look()):
+            alnum += Take()
+    return alnum
 
 
 # use program counter like a cpu
