@@ -359,7 +359,7 @@ def Error(text):
         + ": '"
         + source[s:pc]
         + "_"
-        + source[:e]
+        + source[pc:e]
     )
     exit(1)
 
