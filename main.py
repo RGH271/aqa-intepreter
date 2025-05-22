@@ -128,9 +128,9 @@ def BooleanExpression(act):
 def MathFactor(act):
     m = 0
     # allow for round brackets surrounding a maths expression
-    if TakeNext('('):
+    if TakeNext("("):
         m = MathExpression(act)
-        if not TakeNext(')'):
+        if not TakeNext(")"):
             Error("missing ')'")
     # check for just a raw number
     elif IsDigit(Next()):
