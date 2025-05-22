@@ -8,6 +8,11 @@ Ideally the files you put in should be *.aqac files, but it can be anything atm 
 
 ## Usage
 
-It is VERY unfinised, in the sense that it cant do much more than print statements, but if you wish to run it then clone the repo, and then do `python3 main.py <your file>`
+It is VERY unfinised, in the sense that it cant do much more than print statements, but if you wish to run it then clone the repo, and then do:
+
+```bash
+cd aqa-interpreter
+python3 main.py <your file>
+```
 
 inspired heavily by [slu4's video](https://www.youtube.com/watch?v=LgsW0eGk-6U)
