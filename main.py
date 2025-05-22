@@ -376,7 +376,7 @@ if len(sys.argv) < 2:
 try:
     # take first argument after binary is run
     f = open(sys.argv[1], "r")
-except:
+except:  # noqa: E722
     print("ERROR: Can't find source file '" + sys.argv[1] + "'")
     exit(1)
 source = f.read() + "\0"
