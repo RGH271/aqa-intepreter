@@ -11,3 +11,6 @@ wheels/
 
 # macos funerry
 .DS_Store
+
+# remove test files
+*.aqac
