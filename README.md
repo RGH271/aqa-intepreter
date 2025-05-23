@@ -15,4 +15,14 @@ cd aqa-interpreter
 python3 main.py <your file>
 ```
 
+## Roadmap
+
+ -[] Print statements
+ -[] Variable assignments
+ -[] versatile maths
+ -[] subroutines
+ -[] if/else
+ -[] while loops
+ -[] for loops
+
 inspired heavily by [slu4's video](https://www.youtube.com/watch?v=LgsW0eGk-6U)
