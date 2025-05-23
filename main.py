@@ -190,8 +190,8 @@ def MathExpression(act):
 def String(act):
     s = ""
     # literal strings
-    if TakeNext('"'):
-        while not TakeString('"'):
+    if TakeNext('"') or TakeNext("'"):
+        while not TakeString('"') or not TakeString("'"):
             if Look() == "\0":
                 Error("unexpected EOF")
             if TakeString("\\n"):
@@ -241,34 +241,6 @@ def Expression(act):
         return ("i", MathExpression(act))
 
 
-# while logic
-def DoWhile(act):
-    # save pc of the while statement to allow for 'breaks' to work properly
-    global pc
-    local = [act[0]]
-    pc_while = pc
-
-    while BooleanExpression(local):
-        Block(local)
-        pc = pc_while
-    Block([False])
-
-
-# add if/else logic
-def DoIfElse(act):
-    b = BooleanExpression(act)
-    if act[0] and b:
-        Block(act)
-    else:
-        Block([False])
-    Next()
-    if TakeString("else"):
-        if act[0] and not b:
-            Block(act)
-        else:
-            Block([False])
-
-
 # run functions
 def DoGoSub(act):
     global pc
@@ -302,11 +274,6 @@ def DoAssign(act):
         variable[ident] = e
 
 
-def DoBreak(act):
-    if act[0]:
-        act[0] = False
-
-
 # print statements
 def DoPrint(act):
     while True:
@@ -318,17 +285,11 @@ def DoPrint(act):
 
 
 def Statement(act):
-    if TakeString("print"):
+    if TakeString("OUTPUT"):
         DoPrint(act)
-    elif TakeString("if"):
-        DoIfElse(act)
-    elif TakeString("while"):
-        DoWhile(act)
-    elif TakeString("break"):
-        DoBreak(act)
     elif TakeString("gosub"):
         DoGoSub(act)
-    elif TakeString("sub"):
+    elif TakeString("SUBROUTINE"):
         DoSubDef()
     else:
         DoAssign(act)
