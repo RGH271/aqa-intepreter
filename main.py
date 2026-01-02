@@ -241,39 +241,7 @@ def Expression(act):
         return ("i", MathExpression(act))
 
 
-# run functions
-def DoGoSub(act):
-    global pc
-    ident = TakeNextAlNum()
-    if ident not in variable or variable[ident][0] != "p":
-        Error("unknown subroutine")
-    # execute block as subroutine
-    ret = pc
-    pc = variable[ident][1]
-    Block(act)
-    pc = ret
-
-
 # define subroutines/functions
-def DoSubDef():
-    global pc
-    ident = TakeNextAlNum()
-    if ident == "":
-        Error("missing subroutine identifier")
-    variable[ident] = ("p", pc)
-    Block([False])
-
-
-# variable assignments
-def DoAssign(act):
-    ident = TakeNextAlNum()
-    if not TakeNext("=") or ident == "":
-        Error("unknown statement")
-    e = Expression(act)
-    if act[0] or ident not in variable:
-        variable[ident] = e
-
-
 # print statements
 def DoPrint(act):
     while True:
@@ -287,12 +255,6 @@ def DoPrint(act):
 def Statement(act):
     if TakeString("OUTPUT"):
         DoPrint(act)
-    elif TakeString("gosub"):
-        DoGoSub(act)
-    elif TakeString("SUBROUTINE"):
-        DoSubDef()
-    else:
-        DoAssign(act)
 
 
 def Block(act):
