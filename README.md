@@ -15,6 +15,20 @@ cd aqa-interpreter
 python3 main.py <your file>
 ```
 
+## Contribution
+
+Hahahah why are you contributing to this dead broken project.
+
+But if you are:
+
+```bash
+git clone https://github.com/RGH271/aqa-intepreter.github
+cd aqa-intepreter
+uv sync
+```
+
+Please format the code with Ruff and keep code annotated.
+
 ## Roadmap
 
 - [ ] Print statements
